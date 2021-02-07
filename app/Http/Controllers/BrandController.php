@@ -20,15 +20,7 @@ class BrandController extends Controller
         return view("admin.brand.index",['data'=>$data],compact('brandCat'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -38,7 +30,29 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'brandcat_id'     =>'required',
+            'name'            =>'required',
+            'img'             =>'image|mimes:jpeg,png,jpg,gif',
+        ]);
+
+        $fileName = null;
+    if (request()->hasFile('img')) {
+        $file = request()->file('img');
+        $fileName = md5($file->getClientOriginalName() . time()) . "." . $file->getClientOriginalExtension();
+        $file->move('./uploades/brand/', $fileName);    
+    }
+
+    $brand=Brand::create([
+        'brandcat_id' => $request->input('brandcat_id'),
+        'name'        => $request->input('name'),
+        'img'         => $fileName,
+    ]);
+    if($brand){
+        return redirect()->back();
+       }
+  
+       return 'failed';  
     }
 
     /**
@@ -47,9 +61,17 @@ class BrandController extends Controller
      * @param  \App\Models\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function show(Brand $brand)
+    public function show( $id)
     {
-        //
+        $brands = Brand::where('id',$id)->first();
+
+        // $brandCatarray = BrandCategory::all();
+        // $brandarry=[];
+        // for($i=0;$i<count($brandCatarray); $i++){
+        //     $brandArray = Brand::where('brandcat_id',$brandCatarray[$i]['id'])->get();
+        //     $brandCatarray[$i]['brandarry']=$brandArray;
+        // };
+        return view("brand.show",compact('brands')); 
     }
 
     /**

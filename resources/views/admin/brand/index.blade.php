@@ -1,11 +1,11 @@
 @extends('admin_master')
 @section('content')
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2">About</h1>
+        <h1 class="h2">Brand</h1>
     </div>
 
     <div class="container">
-<form action="{{route('about-create')}}" method ="post" enctype="multipart/form-data">
+<form action="{{route('b-create')}}" method ="post" enctype="multipart/form-data">
  @csrf
        <div class="form-group row">
             <label for="inputEmail3" class="col-sm-2 col-form-label">Brand Category</label>
@@ -61,7 +61,7 @@
                       <td></td>
                       <td>{{ $i-> name }}</td>
                       <td style="width:350px;"><img class="bd-placeholder-img " width="150px" 
-                             height="150px" src="{{asset('uploades/about/').'/'.$i->img}}"></td>
+                             height="150px" src="{{asset('uploades/brand/').'/'.$i->img}}"></td>
                       <td style="width:150px;">
                       <a href="" class="btn btn-primary">Edit</a>
                       <a href="" class="btn btn-danger">Edit</a>

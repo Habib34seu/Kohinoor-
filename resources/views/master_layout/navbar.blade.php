@@ -1,4 +1,66 @@
 
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+
+<script type="text/javascript">
+/// some script
+
+// jquery ready start
+$(document).ready(function() {
+	jQuery code
+
+	////////////////////// Prevent closing from click inside dropdown
+    $(document).on('click', '.dropdown-menu', function (e) {
+      e.stopPropagation();
+    });
+
+    make it as accordion for smaller screens
+    if ($(window).width() < 992) {
+	  	$('.dropdown-menu a').click(function(e){
+	  		e.preventDefault();
+	        if($(this).next('.submenu').length){
+	        	$(this).next('.submenu').toggle();
+	        }
+	        $('.dropdown').on('hide.bs.dropdown', function () {
+			   $(this).find('.submenu').hide();
+			})
+	  	});
+	}
+	
+}); // jquery end
+</script>
+<style type="text/css">
+	@media (min-width: 992px){
+		.dropdown-menu .dropdown-toggle:after{
+			border-top: .3em solid transparent;
+		    border-right: 0;
+		    border-bottom: .3em solid transparent;
+		    border-left: .3em solid;
+		}
+
+		.dropdown-menu .dropdown-menu{
+			margin-left:0; margin-right: 0;
+		}
+
+		.dropdown-menu li{
+			position: relative;
+		}
+		.nav-item .submenu{ 
+			display: none;
+			position: absolute;
+			left:100%; top:-7px;
+		}
+		.nav-item .submenu-left{ 
+			right:100%; left:auto;
+		}
+
+		.dropdown-menu > li:hover{ background-color: #f1f1f1 }
+		.dropdown-menu > li:hover > .submenu{
+			display: block;
+		}
+    }
+    .dropdown:hover .dropdown-content {display: block;}
+</style>
  
         <marquee behavior="scroll" direction="left" scrollamount="2">
             <strong><font face="Bookman Old Style" size="+1" color="#ff0000">
@@ -26,12 +88,22 @@
             use App\Models\QuarterlyResult;
             use App\Models\CorporateGovernance;
             use App\Models\About;
+            use App\Models\BrandCategory;
+            use App\Models\Brand;
 
             $quaterlyResult = QuarterlyResult::all();
             $about = About::all();
             $halfYearlyReport = HalfYearlyReport::all();
             $corporateGovernance = CorporateGovernance::all();
-            
+
+           // Brand start
+            $brandCatarray = BrandCategory::all();
+            $brandarry=[];
+            for($i=0;$i<count($brandCatarray); $i++){
+                $brandArray = Brand::where('brandcat_id',$brandCatarray[$i]['id'])->get();
+                $brandCatarray[$i]['brandarry']=$brandArray;
+            }
+            // Brand End
         @endphp
 <nav class="navbar navbar-expand-lg navbar-light bg-primary">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,17 +152,25 @@
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" 
-                    id="navbarDropdown" role="button" data-toggle="dropdown" 
-                    aria-haspopup="true" aria-expanded="false">
-                   Brand
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
+                    <a class="nav-link dropdown-toggle">Brand</a>
+                    <ul class="dropdown-menu dropdown-content">
+                        @foreach($brandCatarray as $brancat)
+                        <li>
+                            <a class="dropdown-item dropdown-toggle" value="{{$brancat->id}}" href="#"> 
+                                {{$brancat->name}} 
+                            </a>
+                            <ul class="submenu dropdown-menu">
+                                @foreach($brancat->brandarry as $brand)
+                                <li>
+                                    <a class="dropdown-item" value="{{$brand->id}}" href="{{route('bshow',[$brand->id])}}">
+                                        {{$brand->name}} 
+                                    </a>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </li>
+                        @endforeach
+                    </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" 
