@@ -90,20 +90,37 @@ $(document).ready(function() {
             use App\Models\About;
             use App\Models\BrandCategory;
             use App\Models\Brand;
+            use App\Models\Product;
+            use App\Models\ProductCategory;
+            use App\Models\ProductSubCategory;
 
             $quaterlyResult = QuarterlyResult::all();
             $about = About::all();
             $halfYearlyReport = HalfYearlyReport::all();
             $corporateGovernance = CorporateGovernance::all();
 
-           // Brand start
+           // Brand start=======================================
             $brandCatarray = BrandCategory::all();
             $brandarry=[];
             for($i=0;$i<count($brandCatarray); $i++){
                 $brandArray = Brand::where('brandcat_id',$brandCatarray[$i]['id'])->get();
                 $brandCatarray[$i]['brandarry']=$brandArray;
             }
-            // Brand End
+            // Brand End=========================================
+
+            // Product Start ===================================
+            $productCatarray = ProductCategory::all();
+            $subcatarry=[];
+            for($i=0;$i<count($productCatarray) ;$i++){
+                $produsubctCatarray = ProductSubCategory::where('prod_cat_id',$productCatarray[$i]['id'])->get();
+                for($j=0;$j<count($produsubctCatarray);$j++){
+                    $productarray=Product::where('prod_subcat_id',$produsubctCatarray[$j]['id'])->get();
+                    $produsubctCatarray[$j]['productarray']=$productarray;
+
+                }
+                $productCatarray[$i]['subcatarry']=$produsubctCatarray;
+            }
+        // Product End ==========================================
         @endphp
 <nav class="navbar navbar-expand-lg navbar-light bg-primary">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -139,18 +156,36 @@ $(document).ready(function() {
                     </div>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" 
-                    id="navbarDropdown" role="button" data-toggle="dropdown" 
-                    aria-haspopup="true" aria-expanded="false">
-                   Product
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li>
+                        <a class="nav-link dropdown-toggle" href="product" product>  Product  </a>
+                        <ul class="dropdown-menu dropdown-content">
+                            @foreach($productCatarray as $prodcat)
+                                    <li>
+                                        <a class="dropdown-item dropdown-toggle" href="#" value="{{$prodcat->id}}"> 
+                                        {{ $prodcat->name }}
+                                        </a>
+                                        <ul class="submenu dropdown-menu">
+                                        @foreach($prodcat->subcatarry as $subprodcat)
+                                                <li>
+                                                    <a class="dropdown-item dropdown-toggle" href="#" value="{{$subprodcat->id}}"> 
+                                                    {{ $subprodcat->name  }}
+                                                    </a>
+                                                    <ul class="submenu dropdown-menu">
+                                                    @foreach($subprodcat->productarray as $product)
+                                                        <li>
+                                                        
+                                                            <a class="dropdown-item" href="{{route('pshow',[$product->id])}}"  value="{{$product->id}}">
+                                                            {{ $product->name }}
+                                                            </a>
+                                                        </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </li>
+                                        @endforeach
+                                        </ul>
+                                    </li>
+                            @endforeach
+                        </ul>
+               </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle">Brand</a>
                     <ul class="dropdown-menu dropdown-content">

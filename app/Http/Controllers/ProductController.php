@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BrandCategory;
-use App\Models\Brand;
+use App\Models\Product;
+use App\Models\ProductCategory;
+use App\Models\ProductSubCategory;
 use Illuminate\Http\Request;
 
-class BrandController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,12 +16,13 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $data = Brand::all();
-        $brandCat = BrandCategory::select('id','name')->get();
-        return view("admin.brand.index",['data'=>$data],compact('brandCat'));
+        $data = Product::all();
+        $productCat = ProductCategory::select('id','name')->get();
+        $productsubCat = ProductSubCategory::select('id','name')->get();
+        return view("admin.product.index",['data'=>$data],compact('productCat','productsubCat'));
     }
 
-    
+
 
     /**
      * Store a newly created resource in storage.
@@ -30,8 +32,10 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
+        $products = new Product;
         $request->validate([
-            'brandcat_id'     =>'required',
+            'prod_cat_id'     =>'required',
+            'prod_subcat_id'  =>'required',
             'name'            =>'required',
             'img'             =>'image|mimes:jpeg,png,jpg,gif',
         ]);
@@ -40,40 +44,42 @@ class BrandController extends Controller
     if (request()->hasFile('img')) {
         $file = request()->file('img');
         $fileName = md5($file->getClientOriginalName() . time()) . "." . $file->getClientOriginalExtension();
-        $file->move('./uploades/brand/', $fileName);    
+        $file->move('./uploades/product/', $fileName);    
     }
 
-    $brand=Brand::create([
-        'brandcat_id' => $request->input('brandcat_id'),
-        'name'        => $request->input('name'),
-        'img'         => $fileName,
+    $product=Product::create([
+        'prod_cat_id'    => $request->input('prod_cat_id'),
+        'prod_subcat_id' => $request->input('prod_subcat_id'),
+        'name'   => $request->input('name'),
+        'img'            => $fileName,
+        
     ]);
-    if($brand){
+    if($product){
         return redirect()->back();
        }
   
-       return 'failed';  
+       return 'failed';
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Brand  $brand
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function show( $id)
+    public function show($id)
     {
-        $brands = Brand::where('id',$id)->first();
-        return view("brand.show",compact('brands')); 
+        $product=Product::where('id',$id)->first();
+        return view("product.show",compact('product')); 
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Brand  $brand
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function edit(Brand $brand)
+    public function edit(Product $product)
     {
         //
     }
@@ -82,10 +88,10 @@ class BrandController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Brand  $brand
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Brand $brand)
+    public function update(Request $request, Product $product)
     {
         //
     }
@@ -93,10 +99,10 @@ class BrandController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Brand  $brand
+     * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Brand $brand)
+    public function destroy(Product $product)
     {
         //
     }

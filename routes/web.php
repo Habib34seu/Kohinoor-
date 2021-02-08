@@ -2,16 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
 Route::get('/', 'App\Http\Controllers\HomeController@index');
 Route::get('/admin', 'App\Http\Controllers\AdminController@index');
@@ -28,6 +18,27 @@ Route::get('/brand', 'App\Http\Controllers\BrandController@index');
 Route::post('/b-create', 'App\Http\Controllers\BrandController@store')->name('b-create');
 Route::get('/bshow/{id}', "App\Http\Controllers\BrandController@show")->name('bshow');
 // ===========  Brand  router End ====================================================
+
+
+// ===========  Product Category  router Start====================================================
+Route::get('/productCategory', 'App\Http\Controllers\ProductCategoryController@index');
+Route::post('/pc-create', 'App\Http\Controllers\ProductCategoryController@store')->name('pc-create');
+Route::get('/pcshow/{id}', "App\Http\Controllers\ProductCategoryController@show")->name('pcshow');
+// ===========  Product Category router End ====================================================
+
+
+// ===========  Product SubCategory  router Start====================================================
+Route::get('/productSubCategory', 'App\Http\Controllers\ProductSubCategoryController@index');
+Route::post('/psc-create', 'App\Http\Controllers\ProductSubCategoryController@store')->name('psc-create');
+Route::get('/pscshow/{id}', "App\Http\Controllers\ProductSubCategoryController@show")->name('pscshow');
+// ===========  Product SubCategory router End ====================================================
+
+
+// ===========  Product SubCategory  router Start====================================================
+Route::get('/product', 'App\Http\Controllers\ProductController@index');
+Route::post('/p-create', 'App\Http\Controllers\ProductController@store')->name('p-create');
+Route::get('/pshow/{id}', "App\Http\Controllers\ProductController@show")->name('pshow');
+// ===========  Product SubCategory router End ====================================================
 
 
 // ===========  About router ====================================================
